@@ -14,7 +14,11 @@ function ToDoList() {
   }
 
   function addTask() {
-    if (newtask.trim() === "" || taskTime.trim() === "") return;
+    if (newtask.trim() === "" || taskTime.trim() === "") {
+      alert("Please enter task and time");
+      return;
+    }
+
     setTask([...task, { name: newtask.toUpperCase(), time: taskTime }]); // Store task with time
     setNewtask("");
     setTaskTime("");
