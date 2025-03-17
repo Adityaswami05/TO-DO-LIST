@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 function ToDoList() {
   const [task, setTask] = useState([]);
   const [newtask, setNewtask] = useState("");
   const [taskTime, setTaskTime] = useState("");
+  const [darkMode, setDarkMode] = useState(false); // Add state for theme toggle
 
   function inputChange(e) {
     setNewtask(e.target.value);
@@ -48,30 +49,52 @@ function ToDoList() {
     setTask(updatedTasks);
   }
 
+  // Handle Enter key press to add task
+  function handleKeyPress(e) {
+    if (e.key === 'Enter' && newtask.trim() !== "" && taskTime.trim() !== "") {
+      addTask();
+    }
+  }
+
+  // Toggle dark gaming theme
+  function toggleTheme() {
+    setDarkMode(!darkMode);
+  }
+
   return (
-    <div className="todolist">
-      <h1>To Do List</h1>
+    <div className={`todolist ${darkMode ? "dark-theme" : ""}`}>
+      <div className="theme-toggle-container">
+        <button 
+          className={`theme-toggle ${darkMode ? "dark-active" : ""}`} 
+          onClick={toggleTheme}
+        >
+          {darkMode ? "🌞 Light Mode" : "🎮 Gaming Mode"}
+        </button>
+      </div>
+      <h1>Task Manager</h1>
       <div className="input-container">
         <input
           className="input"
           type="text"
-          placeholder="Enter task"
+          placeholder="What needs to be done?"
           value={newtask}
           onChange={inputChange}
+          onKeyPress={handleKeyPress}
         />
         <input
           className="time-picker"
           type="time"
           value={taskTime}
           onChange={timeChange}
+          onKeyPress={handleKeyPress}
         />
         <button className="add" onClick={addTask}>
-          Add
+          Add Task
         </button>
       </div>
       <div className="list-container">
         {task.length === 0 ? (
-          <p className="empty-message">No tasks added</p>
+          <p className="empty-message">Your task list is empty. Add a task to get started!</p>
         ) : (
           <ol>
             {task.map((taskItem, index) => (
@@ -79,15 +102,15 @@ function ToDoList() {
                 <span className="taskitem">
                   {taskItem.name} - {taskItem.time}
                 </span>
-                <div>
-                  <button className="submit" onClick={() => deleteTask(index)}>
-                    Delete
-                  </button>
+                <div className="task-buttons">
                   <button className="move" onClick={() => moveUp(index)}>
                     ↑
                   </button>
                   <button className="move-down" onClick={() => moveDown(index)}>
                     ↓
+                  </button>
+                  <button className="submit" onClick={() => deleteTask(index)}>
+                    Delete
                   </button>
                 </div>
               </li>
